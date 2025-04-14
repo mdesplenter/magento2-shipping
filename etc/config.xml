@@ -192,5 +192,8 @@
                 <specificerrmsg>This shipping method is not available. To use this shipping method, please contact us.</specificerrmsg>
             </dpdclassicsaturday>
         </carriers>
+        <advanced>
+            <default_package_type>100050050</default_package_type>
+        </advanced>
     </default>
 </config>

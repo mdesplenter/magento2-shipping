@@ -26,6 +26,7 @@ class DpdCache implements CacheInterface
     public function getCache($key)
     {
         $data = unserialize($this->magentoCache->load($key));
+
         return $data;
     }
 }

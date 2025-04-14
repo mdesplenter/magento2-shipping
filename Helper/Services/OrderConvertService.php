@@ -28,6 +28,7 @@ use Magento\Framework\App\Helper\Context;
 use Magento\Sales\Api\Data\OrderAddressInterface;
 use Magento\Sales\Model\Order;
 use Magento\Store\Model\ScopeInterface;
+use Psr\Log\LoggerInterface;
 
 class OrderConvertService extends AbstractHelper
 {
@@ -39,6 +40,8 @@ class OrderConvertService extends AbstractHelper
      * @var OrderService
      */
     private $orderService;
+
+    private $logger;
 
     /**
      * OrderConvertService constructor.
@@ -53,11 +56,13 @@ class OrderConvertService extends AbstractHelper
         DPDClient $DPDClient,
         OrderService $orderService,
         DpdSettings $dpdSettings,
-        ProductFactory $productFactory
+        ProductFactory $productFactory,
+        LoggerInterface $logger
     ) {
         parent::__construct($context);
         $this->dpdSettings = $dpdSettings;
         $this->orderService = $orderService;
+        $this->logger = $logger;
     }
 
     /**
@@ -91,7 +96,8 @@ class OrderConvertService extends AbstractHelper
 
         // Fetch the code from the shipment, if any, else default to the order code
         if ($shipment && !empty($shipment->hasData(Constants::SHIPMENT_EXTRA_DATA)['code'])) {
-            return $shipment->getData(Constants::SHIPMENT_EXTRA_DATA)['code'];
+            return $shipment->getData(Constants::SHIPMENT_EXTRA_DATA)['code'] === '6' ? 'B2C' : $shipment->getData(Constants::SHIPMENT_EXTRA_DATA)['code'];
+
         }
 
         return $order->getDpdShippingProduct();
@@ -170,6 +176,7 @@ class OrderConvertService extends AbstractHelper
                     $shipment->getEntityId() ?? '',
                 ],
                 'weight' => (int) $orderWeight,
+                'volume' => $this->dpdSettings->getDefaultPackageType(),
                 'returns' => $isReturn,
             ];
 
@@ -197,7 +204,6 @@ class OrderConvertService extends AbstractHelper
     public function addParcelsFromPackages(Order $order, ?Order\Shipment $shipment = null, $packages = [])
     {
         $parcels = [];
-
         foreach ($packages as $package) {
             $weight = floatval($package['weight'] ?? $package['params']['weight'] ?? 0);
             $unit = $package['weight_units'] ?? $package['params']['weight_units'] ?? 'KILOGRAM';
@@ -205,6 +211,10 @@ class OrderConvertService extends AbstractHelper
             if ($unit === 'POUND') {
                 $weight = $weight * 0.45359237;
             }
+
+            $volume = empty($package['params']['package_type'])
+                ? $this->dpdSettings->getDefaultPackageType()
+                : $package['params']['package_type'];
 
             $parcel = [
                 'customerReferences' => [
@@ -214,7 +224,9 @@ class OrderConvertService extends AbstractHelper
                     $shipment->getEntityId(),
                 ],
                 'weight' => (int)$weight,
+                'volume' => (string)$volume,
             ];
+
             if (null !== $shipment && $shipment->hasData(Constants::SHIPMENT_EXTRA_DATA)) {
                 $extradata = $shipment->getData(Constants::SHIPMENT_EXTRA_DATA);
                 if (isset($extradata['expirationDate']) && isset($extradata['description'])) {

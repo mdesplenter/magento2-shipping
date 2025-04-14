@@ -1,0 +1,11 @@
+<?php
+
+?>
+<button class="scalable" type="button" id="<?= $block->getHtmlId() ?>" data-mage-init='{"dpdTestConnection":{
+    "url": "<?= $block->escapeUrl($block->getAjaxUrl()) ?>",
+    "elementId": "<?= $block->getHtmlId() ?>",
+    "successText": "<?= $block->escapeHtmlAttr(__('These are valid credentials! Test again?')) ?>",
+    "failedText": "<?= $block->escapeHtmlAttr(__('Invalid Credentials! Test again?')) ?>",
+    "fieldMapping": "<?= /* @noEscape */ $block->getFieldMapping() ?>"}, "validation": {}}'>
+    <span id="<?= $block->getHtmlId() ?>_result"><?= $block->escapeHtml($block->getButtonLabel()) ?></span>
+</button>

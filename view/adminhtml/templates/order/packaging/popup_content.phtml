@@ -43,6 +43,9 @@ use Magento\Framework\Measure\Weight;
                         <th class="col-girth"><?= $block->escapeHtml(__('Girth')) ?></th>
                         <th>&nbsp;</th>
                     <?php endif; ?>
+                    <th class="col-package-type">
+                        <?= $block->escapeHtml(__('Package Type')) ?>
+                    </th>
                     <th class="col-custom">
                         <?= $block->escapeHtml(__('Customs Value')) ?>
                     </th>
@@ -83,6 +86,16 @@ use Magento\Framework\Measure\Weight;
                             <?php foreach ($containers as $key => $value): ?>
                                 <option value="<?= $block->escapeHtmlAttr($key) ?>" >
                                     <?= $block->escapeHtml($value) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </td>
+                    <td class="col-package-type">
+                        <select name="shipping_package_type" class="admin__control-select">
+                            <option value=""></option>
+                            <?php foreach ($block->getPackageTypes() as $packageType): ?>
+                                <option value="<?php echo $packageType['value'] ?>">
+                                    <?php echo $packageType['label'] ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
