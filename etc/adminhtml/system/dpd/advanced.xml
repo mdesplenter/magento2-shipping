@@ -81,5 +81,9 @@
             <label>Send shipment confirmation Email</label>
             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
         </field>
+        <field id="default_package_type" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Default Package Type</label>
+            <source_model>DpdConnect\Shipping\Model\Attribute\Source\DefaultPackageTypeOptions</source_model>
+        </field>
     </group>
 </include>

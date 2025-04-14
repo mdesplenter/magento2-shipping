@@ -7,6 +7,7 @@ use DpdConnect\Shipping\Helper\Data;
 use DpdConnect\Shipping\Helper\DPDClient;
 use Magento\Sales\Model\Order;
 use Magento\Shipping\Helper\Carrier;
+use DpdConnect\Shipping\Model\Attribute\Source\DefaultPackageTypeOptions;
 
 /**
  * Override the default Magento 2 package management screen
@@ -23,6 +24,9 @@ class Packaging extends \Magento\Shipping\Block\Adminhtml\Order\Packaging
      */
     private $dataHelper;
 
+    /** @var DefaultPackageTypeOptions */
+    private $defaultPackageTypeOptions;
+
     /**
      * @param DPDClient $client
      * @param \Magento\Backend\Block\Template\Context $context
@@ -33,9 +37,10 @@ class Packaging extends \Magento\Shipping\Block\Adminhtml\Order\Packaging
      * @param array $data
      * @param Carrier|null $carrierHelper
      */
-    public function __construct(Data $dataHelper, DpdClient $client, \Magento\Backend\Block\Template\Context $context, \Magento\Framework\Json\EncoderInterface $jsonEncoder, \Magento\Shipping\Model\Carrier\Source\GenericInterface $sourceSizeModel, \Magento\Framework\Registry $coreRegistry, \Magento\Shipping\Model\CarrierFactory $carrierFactory, array $data = [], ?Carrier $carrierHelper = null)
+    public function __construct(DefaultPackageTypeOptions $defaultPackageTypeOptions, Data $dataHelper, DpdClient $client, \Magento\Backend\Block\Template\Context $context, \Magento\Framework\Json\EncoderInterface $jsonEncoder, \Magento\Shipping\Model\Carrier\Source\GenericInterface $sourceSizeModel, \Magento\Framework\Registry $coreRegistry, \Magento\Shipping\Model\CarrierFactory $carrierFactory, array $data = [], ?Carrier $carrierHelper = null)
     {
         parent::__construct($context, $jsonEncoder, $sourceSizeModel, $coreRegistry, $carrierFactory, $data);
+        $this->defaultPackageTypeOptions = $defaultPackageTypeOptions;
         $this->client = $client;
         $this->dataHelper = $dataHelper;
     }
@@ -113,6 +118,14 @@ class Packaging extends \Magento\Shipping\Block\Adminhtml\Order\Packaging
         }
 
         return $availableProducts;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPackageTypes(): array
+    {
+        return $this->defaultPackageTypeOptions->getAllOptions();
     }
 
     /**

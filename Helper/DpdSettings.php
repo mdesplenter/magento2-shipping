@@ -42,6 +42,7 @@ class DpdSettings extends AbstractHelper
     const ADVANCED_PRINT_PHONE_NUMBER = 'dpdshipping/advanced/print_phone_number';
     const ADVANCED_PRINT_ORDER_ID = 'dpdshipping/advanced/print_order_id';
     const ADVANCED_CUSTOMS_CONTENT_TYPE = 'dpdshipping/advanced/customs_content_type';
+    const ADVANCED_DEFAULT_PACKAGE_TYPE = 'dpdshipping/advanced/default_package_type';
 
     const PRODUCT_ATTRIBUTE_HS_CODE = 'dpdshipping/product_attribute/hs_code';
     const PRODUCT_ATTRIBUTE_LENGTH = 'dpdshipping/product_attribute/product_length';
@@ -61,11 +62,55 @@ class DpdSettings extends AbstractHelper
 
     const CARRIER_DPD_CUSTOMER_PRODUCTS = 'carriers/dpd/customer_products';
 
+    /**
+     * @param string $path
+     * @param string|null $scopeCode
+     * @param string $scopeType
+     * @return string|null
+     */
+    protected function getConfigValue(
+        string $path,
+        string $scopeCode = null,
+        string $scopeType = 'store'
+    ): ?string
+    {
+        return $this->scopeConfig->getValue(
+            $path,
+            $scopeType,
+            $scopeCode
+        );
+    }
+
+    /**
+     * @param string|null $scopeCode
+     * @param string $scopeType
+     * @return string|null
+     */
+    public function getDefaultPackageType(
+        string $scopeCode = null,
+        string $scopeType = 'store'
+    ): ?string
+    {
+        return $this->getConfigValue(self::ADVANCED_DEFAULT_PACKAGE_TYPE, $scopeCode, $scopeType);
+    }
+
+    /**
+     * @param $path
+     * @param $scopeType
+     * @param $scopeCode
+     * @return mixed
+     */
     public function getValue($path, $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, $scopeCode = null)
     {
         return $this->scopeConfig->getValue($path, $scopeType, $scopeCode);
     }
 
+    /**
+     * @param $path
+     * @param $scopeType
+     * @param $scopeCode
+     * @return mixed
+     */
     public function isSetFlag($path, $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, $scopeCode = null)
     {
         return $this->scopeConfig->isSetFlag($path, $scopeType, $scopeCode);

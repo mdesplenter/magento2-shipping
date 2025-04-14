@@ -57,12 +57,13 @@ $girthEnabled = $block->isDisplayGirthValue() && $block->isGirthAllowed() ? 1 : 
                         customs_value:              parseFloat(pack.select('input[name="package_customs_value"]')[0].value, 10),
                         weight:                     isNaN(weight) ? '' : weight,
                         length:                     isNaN(length) ? '' : length,
-                        width:                      isNaN(width) ? '' : width,
+                        width:                      isNaN(width)  ? '' : width,
                         height:                     isNaN(height) ? '' : height,
                         weight_units:               pack.select('select[name="container_weight_units"]')[0].value,
                         dimension_units:            pack.select('select[name="container_dimension_units"]')[0].value,
                         shipping_product:           pack.select('select[name="shipping_product"]')[0].value,
-                        product_type:               'default'
+                        product_type:               'default',
+                        package_type:               pack.select('select[name="shipping_package_type"]')[0].value,
                     };
 
                     if ('undefined' != typeof pack.select('input[name="expiration_date"]')[0]) {
@@ -115,6 +116,7 @@ $girthEnabled = $block->isDisplayGirthValue() && $block->isGirthAllowed() ? 1 : 
                         packaging.paramsCreateLabelRequest['packages[' + packageId + ']' + '[params]' + '[content_type_other]']     = packagesParams[packageId]['content_type_other'];
                         packaging.paramsCreateLabelRequest['packages[' + packageId + ']' + '[params]' + '[shipping_product]']       = packagesParams[packageId]['shipping_product'];
                         packaging.paramsCreateLabelRequest['packages[' + packageId + ']' + '[params]' + '[product_type]']           = packagesParams[packageId]['product_type'];
+                        packaging.paramsCreateLabelRequest['packages[' + packageId + ']' + '[params]' + '[package_type]']           = packagesParams[packageId]['package_type'];
 
                         if ('undefined' != typeof packagesParams[packageId]['expiration_date']) {
                             packaging.paramsCreateLabelRequest['packages[' + packageId + ']' + '[params]' + '[expiration_date]'] = packagesParams[packageId]['expiration_date'];
@@ -138,6 +140,7 @@ $girthEnabled = $block->isDisplayGirthValue() && $block->isGirthAllowed() ? 1 : 
                             if (!isNaN(packedItemId)) {
                                 packaging.paramsCreateLabelRequest['packages[' + packageId + ']' + '[items]' + '[' + packedItemId + '][qty]']           = packaging.packages[packageId]['items'][packedItemId]['qty'];
                                 packaging.paramsCreateLabelRequest['packages[' + packageId + ']' + '[items]' + '[' + packedItemId + '][customs_value]'] = packaging.packages[packageId]['items'][packedItemId]['customs_value'];
+                                packaging.paramsCreateLabelRequest['packages[' + packageId + ']' + '[items]' + '[' + packedItemId + '][package_type]']  = packaging.packages[packageId]['items'][packedItemId]['package_type'];
                                 packaging.paramsCreateLabelRequest['packages[' + packageId + ']' + '[items]' + '[' + packedItemId + '][price]']         = self.defaultItemsPrice[packedItemId];
                                 packaging.paramsCreateLabelRequest['packages[' + packageId + ']' + '[items]' + '[' + packedItemId + '][name]']          = self.defaultItemsName[packedItemId];
                                 packaging.paramsCreateLabelRequest['packages[' + packageId + ']' + '[items]' + '[' + packedItemId + '][weight]']        = self.defaultItemsWeight[packedItemId];
