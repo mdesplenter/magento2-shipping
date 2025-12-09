@@ -67,25 +67,44 @@ class ParcelshopInfo extends \Magento\Framework\View\Element\Template
     public function getOpeningHoursHtml()
     {
         $html = "";
-        foreach ($this->parcelshop['openingHours'] as $openinghours) {
-            $openingHoursMorning = $openinghours['openMorning'] . ' - ' . $openinghours['closeMorning'];
-            $openingHoursAfternoon = $openinghours['openAfternoon'] . ' - ' . $openinghours['closeAfternoon'];
+        foreach ($this->parcelshop['openingHours'] ?? [] as $openinghours) {
+            $openMorning = $openinghours['openMorning'] ?? '';
+            $closeMorning = $openinghours['closeMorning'] ?? '';
+            $openAfternoon = $openinghours['openAfternoon'] ?? '';
+            $closeAfternoon = $openinghours['closeAfternoon'] ?? '';
 
-            if ($openingHoursMorning == '00:00 - 00:00') {
-                $openingHoursMorning = __('Closed');
+            $isMorningClosed   = ($openMorning == '00:00' && $closeMorning == '00:00');
+            $isAfternoonClosed = ($openAfternoon == '00:00' && $closeAfternoon == '00:00');
+
+            // Parcel Locker logic: Checks for 00:00 or 00:01 start and 23:59 end
+            $morningFull   = (in_array($openMorning, ['00:00', '00:01']) && $closeMorning == '23:59');
+            $afternoonFull = (in_array($openAfternoon, ['00:00', '00:01']) && $closeAfternoon == '23:59');
+            $isParcelLocker = $morningFull || $afternoonFull;
+
+            $html .= '<tr>';
+
+            $html .= '<td style="padding: 3px; border: none;"></td>';
+            $html .= '<td style="padding: 3px; width: 25%;"><strong>' . $this->escaper->escapeHtml(__(strtolower($openinghours['weekday']))) . '</strong></td>';
+
+            // Time Columns Logic
+            if ($isParcelLocker) {
+                $html .= '<td style="padding: 3px; text-align: center;">' . $this->escaper->escapeHtml(__('Whole day')) . '</td>';
+                $html .= '<td style="padding: 3px; text-align: center;"> </td>';
+            } elseif ($isMorningClosed && $isAfternoonClosed) {
+                $html .= '<td style="padding: 3px; text-align: center;">' . $this->escaper->escapeHtml(__('Closed')) . '</td>';
+                $html .= '<td style="padding: 3px; text-align: center;"> </td>';
+            } elseif ($isMorningClosed && !$isAfternoonClosed) {
+                $html .= '<td style="padding: 3px; width: 25%; text-align: center;">' . $this->escaper->escapeHtml($openAfternoon) . ' - ' . $this->escaper->escapeHtml($closeAfternoon) . '</td>';
+                $html .= '<td style="padding: 3px; width: 25%; text-align: center;"></td>';
+            } elseif (!$isMorningClosed && $isAfternoonClosed) {
+                $html .= '<td style="padding: 3px; width: 25%; text-align: center;">' . $this->escaper->escapeHtml($openMorning) . ' - ' . $this->escaper->escapeHtml($closeMorning) . '</td>';
+                $html .= '<td style="padding: 3px; width: 25%; text-align: center;"></td>';
+            } else {
+                $html .= '<td style="padding: 3px; width: 25%; text-align: center;">' . $this->escaper->escapeHtml($openMorning) . ' - ' . $this->escaper->escapeHtml($closeMorning) . '</td>';
+                $html .= '<td style="padding: 3px; width: 25%; text-align: center;">' . $this->escaper->escapeHtml($openAfternoon) . ' - ' . $this->escaper->escapeHtml($closeAfternoon) . '</td>';
             }
 
-            if ($openingHoursAfternoon == '00:00 - 00:00') {
-                $openingHoursAfternoon = __('Closed');
-            }
-
-            $html .= '
-                <tr>
-                    <td style="padding: 3px; border: none;"></td>
-                    <td style="padding: 3px; width: 25%;"><strong>' . __(strtolower($openinghours['weekday'])) . '</strong></td>
-                    <td style="padding: 3px; width: 25%; text-align: center;">' . $openingHoursMorning . '</td>
-                    <td style="padding: 3px; width: 25%; text-align: center;">' . $openingHoursAfternoon . '</td>
-                </tr>';
+            $html .= '</tr>';
         }
 
         return $html;
