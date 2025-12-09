@@ -27,31 +27,38 @@
         <field id="name1" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1"
                showInStore="1">
             <label>Name</label>
+            <validate>required-entry validate-length maximum-length-35</validate>
         </field>
 
         <field id="street" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1"
                showInStore="1">
             <label>Street</label>
+            <validate>required-entry validate-length maximum-length-35</validate>
         </field>
 
         <field id="house_number" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1"
                showInStore="1">
             <label>House number</label>
+            <validate>required-entry validate-length maximum-length-8</validate>
         </field>
 
         <field id="zip_code" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1"
                showInStore="1">
             <label>Zip code</label>
+            <validate>required-entry no-whitespace validate-alphanum-with-spaces validate-length maximum-length-9</validate>
         </field>
 
         <field id="city" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1"
                showInStore="1">
             <label>City</label>
+            <validate>required-entry validate-alphanum-with-spaces validate-length maximum-length-35</validate>
         </field>
+
         <field id="country" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1"
                showInStore="1">
             <label>Country</label>
             <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+            <validate>required-entry validate-select</validate>
         </field>
     </group>
 </include>

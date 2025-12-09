@@ -27,4 +27,7 @@
     <event name="sales_order_shipment_save_before">
         <observer name="dpdconnect_shipping_sales_order_shipment_save_before" instance="DpdConnect\Shipping\Observer\SalesOrderShipmentSaveBefore" />
     </event>
+    <event name="admin_system_config_changed_section_dpdshipping">
+        <observer instance="DpdConnect\Shipping\Observer\ConfigChanged" name="dpdconnect_shipping_config_save_before" />
+    </event>
 </config>
