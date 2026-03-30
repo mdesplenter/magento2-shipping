@@ -21,7 +21,7 @@ use Magento\Store\Model\StoreManagerInterface;
 class AuthenticationService
 {
     /** @var string  */
-    public const string ADMIN_RESOURCE = 'Magento_Catalog::config_catalog';
+    public const ADMIN_RESOURCE = 'Magento_Catalog::config_catalog';
 
     /**
      * @param StoreManagerInterface $storeManager

@@ -88,7 +88,12 @@ class DpdCustomerProductSettings extends Field
      */
     public function getCustomerProducts()
     {
-        $products = $this->DPDClient->authenticate()->getProduct()->getList();
+        try {
+            $products = $this->DPDClient->authenticate()->getProduct()->getList();
+        } catch (\Exception $e) {
+            $this->_logger->warning('DPD API unavailable when loading customer products: ' . $e->getMessage());
+            return [];
+        }
 
         return array_filter($products, function($product) {
             return in_array($product['type'], ['b2b', 'predict']);

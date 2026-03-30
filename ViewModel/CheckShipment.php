@@ -11,6 +11,7 @@ use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
 use Magento\Ui\Component\MassAction\Filter;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class CheckShipment
@@ -45,6 +46,11 @@ class CheckShipment implements ArgumentInterface
     private $urlBuilder;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * CheckShipment constructor.
      *
      * @param Data                                 $dataHelper
@@ -52,19 +58,22 @@ class CheckShipment implements ArgumentInterface
      * @param Filter                               $filter
      * @param OrderCollectionFactory               $orderCollectionFactory
      * @param \Magento\Backend\Model\UrlInterface  $urlBuilder
+     * @param LoggerInterface                      $logger
      */
     public function __construct(
         Data $dataHelper,
         DpdClient $client,
         Filter $filter,
         OrderCollectionFactory $orderCollectionFactory,
-        \Magento\Backend\Model\UrlInterface $urlBuilder
+        \Magento\Backend\Model\UrlInterface $urlBuilder,
+        LoggerInterface $logger,
     ) {
         $this->filter = $filter;
         $this->orderCollectionFactory = $orderCollectionFactory;
         $this->client = $client;
         $this->dataHelper = $dataHelper;
         $this->urlBuilder = $urlBuilder;
+        $this->logger = $logger;
     }
 
     /**
@@ -126,7 +135,11 @@ class CheckShipment implements ArgumentInterface
      */
     public function getParcelshopCode()
     {
-        $availableProducts = $this->client->authenticate()->getProduct()->getList();
+        try {
+            $availableProducts = $this->client->authenticate()->getProduct()->getList();
+        } catch (\Exception $e) {
+            throw new \Exception('DPD API is currently unavailable', 0, $e);
+        }
         foreach($availableProducts as $product) {
             if ('parcelshop' === $product['type']) {
                 return $product['code'];
@@ -145,7 +158,12 @@ class CheckShipment implements ArgumentInterface
     public function getLabelTypeOptions(Order $order)
     {
         $availableProducts = [];
-        $shippingProducts = $this->client->authenticate()->getProduct()->getList();
+        try {
+            $shippingProducts = $this->client->authenticate()->getProduct()->getList();
+        } catch (\Exception $e) {
+            $this->logger->warning('DPD API unavailable when loading label type options: ' . $e->getMessage());
+            return [];
+        }
         foreach($shippingProducts as $shippingProduct) {
             if ('fresh' === $shippingProduct['type']
                 || ('parcelshop' === $shippingProduct['type'] && !$this->isParcelshopOrder($order))

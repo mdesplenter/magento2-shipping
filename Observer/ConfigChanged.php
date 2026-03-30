@@ -15,11 +15,11 @@ use DpdConnect\Sdk\Exceptions\HttpException;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use DpdConnect\Shipping\Services\ConfigurationValidator;
 
-readonly class ConfigChanged implements ObserverInterface
+class ConfigChanged implements ObserverInterface
 {
     /** @var string  */
-    public const string XML_PATH_ACCOUNT_VALID = 'dpdshipping/account_settings/valid_account';
-    public const string DOCUMENTATION_URL = 'https://integrations.dpd.nl/dpd-shipper/dpd-shipper-webservices/shipment-service-2/';
+    public const XML_PATH_ACCOUNT_VALID = 'dpdshipping/account_settings/valid_account';
+    public const DOCUMENTATION_URL = 'https://integrations.dpd.nl/dpd-shipper/dpd-shipper-webservices/shipment-service-2/';
 
     /**
      * @param RequestInterface $request
@@ -28,11 +28,11 @@ readonly class ConfigChanged implements ObserverInterface
      * @param WriterInterface $configWriter
      */
     public function __construct(
-        private RequestInterface       $request,
-        private AuthenticationService  $authenticationService,
-        private ManagerInterface       $messageManager,
-        private WriterInterface        $configWriter,
-        private ConfigurationValidator $configurationValidator
+        private readonly RequestInterface       $request,
+        private readonly AuthenticationService  $authenticationService,
+        private readonly ManagerInterface       $messageManager,
+        private readonly WriterInterface        $configWriter,
+        private readonly ConfigurationValidator $configurationValidator,
     ) {}
 
     /**

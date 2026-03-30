@@ -160,9 +160,9 @@ class PrintShippingList extends \Magento\Backend\App\Action
                     'phone' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_PHONE),
                     'email' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_EMAIL),
                     'commercialAddress' => true,
-                    'vatnumber' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_VAT_NUMBER),
-                    'eorinumber' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_EORI),
-                    'sprn' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_SPRN),
+                    'vatnumber' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_VAT_NUMBER) ?? '',
+                    'eorinumber' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_EORI) ?? '',
+                    'sprn' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_SPRN) ?? '',
                 ],
                 'orders' => $orders
             ]);
