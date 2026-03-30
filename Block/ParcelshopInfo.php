@@ -84,24 +84,24 @@ class ParcelshopInfo extends \Magento\Framework\View\Element\Template
             $html .= '<tr>';
 
             $html .= '<td style="padding: 3px; border: none;"></td>';
-            $html .= '<td style="padding: 3px; width: 25%;"><strong>' . $this->escaper->escapeHtml(__(strtolower($openinghours['weekday']))) . '</strong></td>';
+            $html .= '<td style="padding: 3px; width: 25%;"><strong>' . $this->_escaper->escapeHtml(__(strtolower($openinghours['weekday']))) . '</strong></td>';
 
             // Time Columns Logic
             if ($isParcelLocker) {
-                $html .= '<td style="padding: 3px; text-align: center;">' . $this->escaper->escapeHtml(__('Whole day')) . '</td>';
+                $html .= '<td style="padding: 3px; text-align: center;">' . $this->_escaper->escapeHtml(__('Whole day')) . '</td>';
                 $html .= '<td style="padding: 3px; text-align: center;"> </td>';
             } elseif ($isMorningClosed && $isAfternoonClosed) {
-                $html .= '<td style="padding: 3px; text-align: center;">' . $this->escaper->escapeHtml(__('Closed')) . '</td>';
+                $html .= '<td style="padding: 3px; text-align: center;">' . $this->_escaper->escapeHtml(__('Closed')) . '</td>';
                 $html .= '<td style="padding: 3px; text-align: center;"> </td>';
             } elseif ($isMorningClosed && !$isAfternoonClosed) {
-                $html .= '<td style="padding: 3px; width: 25%; text-align: center;">' . $this->escaper->escapeHtml($openAfternoon) . ' - ' . $this->escaper->escapeHtml($closeAfternoon) . '</td>';
+                $html .= '<td style="padding: 3px; width: 25%; text-align: center;">' . $this->_escaper->escapeHtml($openAfternoon) . ' - ' . $this->_escaper->escapeHtml($closeAfternoon) . '</td>';
                 $html .= '<td style="padding: 3px; width: 25%; text-align: center;"></td>';
             } elseif (!$isMorningClosed && $isAfternoonClosed) {
-                $html .= '<td style="padding: 3px; width: 25%; text-align: center;">' . $this->escaper->escapeHtml($openMorning) . ' - ' . $this->escaper->escapeHtml($closeMorning) . '</td>';
+                $html .= '<td style="padding: 3px; width: 25%; text-align: center;">' . $this->_escaper->escapeHtml($openMorning) . ' - ' . $this->_escaper->escapeHtml($closeMorning) . '</td>';
                 $html .= '<td style="padding: 3px; width: 25%; text-align: center;"></td>';
             } else {
-                $html .= '<td style="padding: 3px; width: 25%; text-align: center;">' . $this->escaper->escapeHtml($openMorning) . ' - ' . $this->escaper->escapeHtml($closeMorning) . '</td>';
-                $html .= '<td style="padding: 3px; width: 25%; text-align: center;">' . $this->escaper->escapeHtml($openAfternoon) . ' - ' . $this->escaper->escapeHtml($closeAfternoon) . '</td>';
+                $html .= '<td style="padding: 3px; width: 25%; text-align: center;">' . $this->_escaper->escapeHtml($openMorning) . ' - ' . $this->_escaper->escapeHtml($closeMorning) . '</td>';
+                $html .= '<td style="padding: 3px; width: 25%; text-align: center;">' . $this->_escaper->escapeHtml($openAfternoon) . ' - ' . $this->_escaper->escapeHtml($closeAfternoon) . '</td>';
             }
 
             $html .= '</tr>';

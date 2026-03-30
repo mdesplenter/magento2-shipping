@@ -94,12 +94,17 @@ class OrderConvertService extends AbstractHelper
             }
         }
 
-        // Fetch the code from the shipment, if any, else default to the order code
-        if ($shipment && !empty($shipment->hasData(Constants::SHIPMENT_EXTRA_DATA)['code'])) {
-            return $shipment->getData(Constants::SHIPMENT_EXTRA_DATA)['code'] === '6' ? 'B2C' : $shipment->getData(Constants::SHIPMENT_EXTRA_DATA)['code'];
+        $extraData = $shipment->getData(Constants::SHIPMENT_EXTRA_DATA);
+        $productType = $extraData['productType'] ?? null;
+        $productCode = $extraData['code'] ?? '';
 
+        if ($productType === 'default') {
+            if ($productCode === '6') {
+                return 'B2C';
+            }
+            return empty($productCode) ? 'default' : $productCode;
         }
-
+        
         return $order->getDpdShippingProduct();
     }
 
@@ -266,9 +271,9 @@ class OrderConvertService extends AbstractHelper
                 'phoneNumber' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_PHONE, ScopeInterface::SCOPE_STORE, $order->getStoreId()),
                 'email' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_EMAIL, ScopeInterface::SCOPE_STORE, $order->getStoreId()),
                 'commercialAddress' => true,
-                'vatnumber' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_VAT_NUMBER, ScopeInterface::SCOPE_STORE, $order->getStoreId()),
-                'eorinumber' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_EORI, ScopeInterface::SCOPE_STORE, $order->getStoreId()),
-                'sprn' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_SPRN, ScopeInterface::SCOPE_STORE, $order->getStoreId()),
+                'vatnumber' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_VAT_NUMBER, ScopeInterface::SCOPE_STORE, $order->getStoreId()) ?? '',
+                'eorinumber' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_EORI, ScopeInterface::SCOPE_STORE, $order->getStoreId()) ?? '',
+                'sprn' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_SPRN, ScopeInterface::SCOPE_STORE, $order->getStoreId()) ?? '',
             ],
             'receiver' => $this->getReceiverData($order),
             'product' => [
@@ -292,9 +297,9 @@ class OrderConvertService extends AbstractHelper
                 'city' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_CITY, ScopeInterface::SCOPE_STORE, $order->getStoreId()),
                 'country' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_COUNTRY, ScopeInterface::SCOPE_STORE, $order->getStoreId()),
                 'commercialAddress' => true,
-                'vatnumber' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_VAT_NUMBER, ScopeInterface::SCOPE_STORE, $order->getStoreId()),
-                'eorinumber' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_EORI, ScopeInterface::SCOPE_STORE, $order->getStoreId()),
-                'sprn' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_SPRN, ScopeInterface::SCOPE_STORE, $order->getStoreId()),
+                'vatnumber' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_VAT_NUMBER, ScopeInterface::SCOPE_STORE, $order->getStoreId()) ?? '',
+                'eorinumber' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_EORI, ScopeInterface::SCOPE_STORE, $order->getStoreId()) ?? '',
+                'sprn' => $this->dpdSettings->getValue(DpdSettings::STORE_INFORMATION_SPRN, ScopeInterface::SCOPE_STORE, $order->getStoreId()) ?? '',
             ],
             'consignee' => $this->getReceiverData($order)
         ];

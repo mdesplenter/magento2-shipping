@@ -6,13 +6,13 @@ namespace DpdConnect\Shipping\Services;
 
 use Magento\Directory\Model\CountryFactory;
 
-readonly class ConfigurationValidator
+class ConfigurationValidator
 {
     /**
      * @param CountryFactory $countryFactory
      */
     public function __construct(
-        private CountryFactory $countryFactory
+        private readonly CountryFactory $countryFactory,
     ) {}
 
     /**

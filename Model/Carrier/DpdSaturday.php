@@ -196,6 +196,10 @@ class DpdSaturday extends AbstractCarrier implements
             $request->setShippingMethod('dpdsaturday');
             $rate = $this->getRate($request);
 
+            if ($rate === false) {
+                return $result;
+            }
+
             $shippingPrice = $rate['price'];
             if ($request->getFreeShipping() === true) {
                 $shippingPrice = 0;

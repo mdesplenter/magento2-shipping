@@ -243,6 +243,11 @@ class Dpd extends AbstractCarrier implements
         }
 
         $rate = $this->getCustomerProductRate($request, $dpdShippingProduct, $selectedDpdProductSettings);
+
+        if ($rate === false) {
+            return;
+        }
+
         $method->setPrice($rate['price']);
         $method->setCost($rate['cost']);
 
@@ -269,6 +274,11 @@ class Dpd extends AbstractCarrier implements
             }
 
             $rate = $this->getCustomerProductRate($request, $enabledProduct, $settings);
+
+            if ($rate === false) {
+                continue;
+            }
+
             $method->setPrice($rate['price']);
             $method->setCost($rate['cost']);
             $method->setMethod($enabledProduct);
@@ -377,6 +387,10 @@ class Dpd extends AbstractCarrier implements
             $request->setShippingMethod('dpd_'.$productCode);
 
             $rate = $this->getRate($request);
+
+            if ($rate === false) {
+                return false;
+            }
 
             $shippingPrice = $rate['price'];
             if ($request->getFreeShipping()) {
